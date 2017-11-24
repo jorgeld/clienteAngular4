@@ -94,3 +94,6 @@ gulp.task('limpiar-compresion-local', function () {
 
 
 
+node_modules/
+.idea/
+tslint.json
