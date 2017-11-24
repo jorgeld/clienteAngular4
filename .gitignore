@@ -1,0 +1,96 @@
+/** Tareas de despliegue **/
+
+/** Importación de plugins **/
+var gulp        = require('gulp');
+var GulpSSH     = require('gulp-ssh');
+var fs         	= require('fs');
+var tar         = require('gulp-tar');
+var gzip        = require('gulp-gzip');
+var argv        = require('yargs').argv;
+var del         = require('del');
+var env         = require('gulp-env');
+var replace     = require('gulp-replace');
+var gulpSSH;
+
+env({ file: '.env.json'});
+
+//Parametro de ejecución ej: > gulp deploy --destino pro
+var destino = process.env['HOST_'+argv.destino] || process.env['HOST_desa'];
+var path_deploy = process.env['PATH_DEPLOY_'+argv.destino];
+var base = process.env['BASE_'+argv.destino] || process.env['BASE_desa'];
+var api_carga = process.env['BASE_API_' + argv.destino] || process.env['BASE_API_desa'];
+
+// Configuración de la conexión SSH
+var config = {
+    host: destino,
+    username : process.env.USERNAME,
+    port: 22,
+    privateKey: fs.readFileSync(process.env.PATH_PRIVATEKEY), //ruta local de nuestro privateKey
+    passphrase: process.env.PATH_PRIVATEKEY_PASSPHRASE
+}
+
+gulpSSH = new GulpSSH({
+    ignoreErrors: false,
+    sshConfig: config
+});
+
+//Tarea limpiar - limpia toda la carpeta remota.
+gulp.task('limpiar', function () {
+    return gulpSSH
+        .exec([process.env.PATH_SHELL_CLEAN]);
+});
+
+/** Construcción index.html Producción **/
+gulp.task("html-deploy", function() {
+
+    gulp.src("dist/index.html")
+        .pipe(replace('href="http://localhost/backoffice/"','href="' + base + '"'))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task("js-deploy", function () {
+    gulp.src("dist/scripts/*")
+        .pipe(replace('https://apidesa.cnmc.gob.es', api_carga))
+        .pipe(gulp.dest('dist/scripts'));
+});
+
+//Tarea comprimir - comprime en local la carpeta dist.
+gulp.task('comprimir', function() {
+    return gulp.src('./dist/**/*')
+        .pipe(tar('dist.tar',{mode:0755})) //mode:0755 para comprimir archivos y directorios.
+        .pipe(gzip())
+        .pipe(gulp.dest('.'));
+});
+
+//Tarea enviar - transfiere el archivo comprimido al destino elegido por sftp.
+gulp.task('enviar', function () {
+    return gulp.src('./dist.tar.gz')
+        .pipe(gulpSSH.sftp('write', path_deploy+'/dist.tar.gz'));
+});
+
+//Tarea descomprimir - descomprime el archivo remoto
+gulp.task('descomprimir', function () {
+    return gulpSSH
+        .exec(['tar -zxvf '+path_deploy+'/dist.tar.gz -C '+path_deploy]);
+});
+
+//Tarea limpiar-compresion - limpia la compresion en remoto
+gulp.task('limpiar-compresion-remota', function () {
+    return gulpSSH
+        .exec(['rm -rf '+path_deploy+'/dist.tar.gz']);
+});
+
+//Tarea dodeploy - renombrar el archivo backoffice.war.deployed
+gulp.task('dodeploy', function () {
+    return gulpSSH
+        .exec(['touch '+path_deploy+'.dodeploy'])
+});
+
+//Tarea limpiar-compresion - limpia la compresion en remoto
+gulp.task('limpiar-compresion-local', function () {
+    del(['./dist.tar.gz']);
+});
+
+
+
+
