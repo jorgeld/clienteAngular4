@@ -10,7 +10,7 @@ export class UsersService {
 
   constructor(private _http: Http) { }
 
-  getUsers() {
+  getUsersRest() {
     return this._http.get('http://localhost:3000/api/users')
       .map(res => res.json());
   }
@@ -33,10 +33,6 @@ export class UsersService {
   updateUser(idUser,body){
     return this._http.put('http://localhost:3000/api/user/update',body)
       .map(res => res.json());
-  }
-
-  prueba(){
-    console.log('mandando prueba')
   }
 
 

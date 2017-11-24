@@ -4,11 +4,17 @@ import { NgModule } from '@angular/core';
 // Importamos el módulo http del paquete http de Angular
 import { HttpModule, JsonpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
-import { UsersCreateComponent } from './components/users-create/users-create.component';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { MenuComponent } from './components/menu/menu.component';
-import { UsersListComponent } from './components/users-list/users-list.component';
+import { UsersComponent } from './components/users/users.component';
+import { UsersListComponent } from './components/users/users-list/users-list.component';
+import { UsersCreateComponent } from './components/users/users-create/users-create.component';
+import { Routes , RouterModule} from "@angular/router";
+
+const appRoutes: Routes = [
+  { path: 'usuarios', component: UsersComponent },
+];
 
 @NgModule({
   declarations: [
@@ -16,12 +22,17 @@ import { UsersListComponent } from './components/users-list/users-list.component
     LoginComponent,
     MenuComponent,
     UsersListComponent,
-    UsersCreateComponent
+    UsersCreateComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
     HttpModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    )
   ],
   providers: [
   ],
