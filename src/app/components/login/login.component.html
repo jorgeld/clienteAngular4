@@ -6,7 +6,6 @@
         <p class="lead">Lorem ipsun dolor bananas caboom</p>
       </div>
 
-
       <div class="sk-cube-grid">
         <div class="sk-cube sk-cube1"></div>
         <div class="sk-cube sk-cube2"></div>
@@ -19,19 +18,18 @@
         <div class="sk-cube sk-cube9"></div>
       </div>
 
-
       <div class="col-sm">
-        <form>
+        <form name="login" id="login">
           <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="userid" [ngModelOptions]="{standalone: true}">
             <small id="emailHelp" class="form-text text-muted">No se ha debido usar el email anteriormente.</small>
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}">
           </div>
-          <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+          <button type="submit" class="btn btn-primary" (click)="setAutentificar()">Iniciar sesión</button>
         </form>
       </div>
     </div>

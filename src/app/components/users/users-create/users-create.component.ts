@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { UsersService } from '../../users.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { UsersService } from '../users.service';
 import { UsersComponent} from '../users.component'
 
 @Component({
@@ -14,6 +14,7 @@ export class UsersCreateComponent implements OnInit {
   private nombreUsuario;
   private email;
   private pass;
+
 
   constructor( private _usersService: UsersService, private _usersComponent : UsersComponent) {}
 

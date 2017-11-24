@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { UsersService } from '../../users.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UsersService } from '../users.service';
 import { AppComponent } from '../../../app.component'
 
 @Component({
@@ -13,7 +14,8 @@ export class UsersListComponent implements OnInit {
 
   @Input('listadousuarios') listadousuarios;
 
-  constructor(private _usersService: UsersService, private _appComponent: AppComponent) {}
+  constructor(private _usersService: UsersService, private _appComponent: AppComponent, private _NgbModal: NgbModal) {}
+
 
   deleteUser = function(idUser,index){
     this._usersService.deleteUser(idUser)
@@ -29,8 +31,8 @@ export class UsersListComponent implements OnInit {
       )
   };
 
-  abirModalCreacion = function(){
-
+  confirmarborrado = function(content){
+    this._NgbModal.open(content);
   };
 
   ngOnInit() {

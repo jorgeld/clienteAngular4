@@ -10,6 +10,12 @@ export class UsersService {
 
   constructor(private _http: Http) { }
 
+  authUser(body){
+    return this._http.post('http://localhost:3000/api/auth',body)
+      .map(res => res.json())
+  }
+
+  // SERVICIOS REST USERS
   getUsersRest() {
     return this._http.get('http://localhost:3000/api/users')
       .map(res => res.json());
